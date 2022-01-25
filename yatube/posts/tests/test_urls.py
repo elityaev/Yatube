@@ -79,7 +79,7 @@ class PostURLTests(TestCase):
         pages = {
             '/create/': HTTPStatus.FOUND,
             f'/posts/{self.post.pk}/edit/': HTTPStatus.FOUND,
-            f'/posts/{self.post.pk}/comment': HTTPStatus.FOUND,
+            f'/posts/{self.post.pk}/comment/': HTTPStatus.FOUND,
         }
         for adress, response in pages.items():
             with self.subTest(adress=adress):

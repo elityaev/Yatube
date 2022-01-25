@@ -324,11 +324,9 @@ class FollowTest(TestCase):
 
     def test_authorized_client_unfollow(self):
         """authorized_client может отписаться от автора"""
-        self.authorized_client.post(
-            reverse(
-                'posts:profile_follow',
-                kwargs={'username': self.user2.username}
-            )
+        Follow.objects.create(
+            user=self.user1,
+            author=self.user2
         )
         self.authorized_client.post(
             reverse(
@@ -345,11 +343,9 @@ class FollowTest(TestCase):
         """
         Новая запись появляется на странице подписчика
         и не появляется на странице не подписанного пользователя"""
-        response = self.authorized_client.post(
-            reverse(
-                'posts:profile_follow',
-                kwargs={'username': self.user2.username}
-            )
+        Follow.objects.create(
+            user=self.user1,
+            author=self.user2
         )
         post = Post.objects.create(
             author=self.user2,

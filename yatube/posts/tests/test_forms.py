@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Post, Group
+from ..models import Post, Group, Comment
 
 TEMP_MEDIA_ROOT = tempfile.mktemp(dir=settings.BASE_DIR)
 
@@ -33,6 +33,7 @@ class PostCreateFormTests(TestCase):
             content_type='image/gif'
         )
         cls.user = User.objects.create_user(username='auth')
+        cls.user2 = User.objects.create_user(username='auth2')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='test',
@@ -43,6 +44,11 @@ class PostCreateFormTests(TestCase):
             text='Тестовый пост1',
             group=cls.group,
         )
+        cls.comment = Comment.objects.create(
+            post=cls.post,
+            author=cls.user2,
+            text='Тестовый комментарий',
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -52,6 +58,8 @@ class PostCreateFormTests(TestCase):
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.authorized_client2 = Client()
+        self.authorized_client2.force_login(self.user2)
 
     def _assert_posts_equal(self, expected_post, actual_post):
         fields_list = ['text', 'pub_date', 'author', 'group', 'image']
@@ -138,3 +146,26 @@ class PostCreateFormTests(TestCase):
                 'posts:post_detail', kwargs={'post_id': self.post.pk}
             )
         )
+
+    def test_create_comment(self):
+        """ Валидная форма создает комментарий."""
+        comment_count = Comment.objects.count()
+        form_data = {
+            'text': 'Тестовый комментарий2',
+        }
+        response = self.authorized_client2.post(
+            reverse('posts:add_comment', kwargs={'post_id': self.post.pk}),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(
+            response, reverse(
+                'posts:post_detail', kwargs={'post_id': self.post.pk}
+            )
+        )
+        self.assertEqual(Comment.objects.count(), comment_count + 1)
+        self.assertTrue(Comment.objects.filter(
+            post=self.post,
+            author=self.user2,
+            text='Тестовый комментарий2',
+        ).exists())

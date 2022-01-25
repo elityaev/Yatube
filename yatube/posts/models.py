@@ -59,8 +59,6 @@ class Group(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(
         Post,
-        blank=True,
-        null=True,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Пост'
@@ -91,3 +89,11 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following'
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_follow'
+            )
+        ]
