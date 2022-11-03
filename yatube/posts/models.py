@@ -52,6 +52,10 @@ class Group(models.Model):
     )
     description = models.TextField()
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
     def __str__(self):
         return self.title
 
@@ -61,6 +65,8 @@ class Comment(models.Model):
         Post,
         on_delete=models.CASCADE,
         related_name='comments',
+        blank=True,
+        null=True,
         verbose_name='Пост'
     )
     author = models.ForeignKey(
@@ -77,6 +83,10 @@ class Comment(models.Model):
         auto_now_add=True
     )
 
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -91,6 +101,8 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
