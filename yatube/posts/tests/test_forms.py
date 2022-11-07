@@ -72,7 +72,7 @@ class PostCreateFormTests(TestCase):
     def test_image_in_context_paginated_pages(self):
         """
         Появление поста с картинкой на страницах
-        index, group_list, profile"""
+        index, group_list, profile."""
         addresses = {
             reverse('posts:index'): self.post,
             reverse(
@@ -93,7 +93,7 @@ class PostCreateFormTests(TestCase):
                 self._assert_posts_equal(first_object, post)
 
     def test_image_in_context_post_detail(self):
-        """Появление поста с картинкой на странице post_detail"""
+        """Появление поста с картинкой на странице post_detail."""
         response = self.authorized_client.get(
             reverse(
                 'posts:post_detail', kwargs={'post_id': self.post.pk}
@@ -129,7 +129,7 @@ class PostCreateFormTests(TestCase):
         ).exists())
 
     def test_post_edit(self):
-        """Валидная форма редактирует запись"""
+        """Валидная форма редактирует запись."""
         form_data = {
             'text': 'Отредактированный пост',
             'group': self.group.pk

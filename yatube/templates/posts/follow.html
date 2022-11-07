@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
-{% block title %}
-  Посты избранных авторов
-{% endblock %}
+{% block title %} Посты избранных авторов {% endblock %}
 {% block content %}
-<h1>Посты избранных авторов</h1>
+  <h1>Посты избранных авторов</h1>
   {% include 'posts/includes/switcher.html' with follow=True %}
   {% for post in page_obj %}
     <ul>
       <li>
         Автор: {{ post.author.get_full_name }}
+        <a href="{% url 'posts:profile' post.author.username %}">
+                  все посты пользователя
+        </a>
       </li>
       <li>
         Дата публикации: {{ post.pub_date|date:"d E Y" }}
@@ -19,13 +20,11 @@
         <img class="card-img my-2" src="{{ im.url }}">
     {% endthumbnail %}
     <p>{{ post.text|linebreaksbr }}</p>
-    <a href="{% url 'posts:post_detail' post.id %}">подробнее...</a><br>
+    <a href="{% url 'posts:post_detail' post.id %}">Подробнее...</a><br>
     {% if request.user == post.author %}
-      <a href="{% url 'posts:post_edit' post.id %}">редактировать</a><br>
+      <a href="{% url 'posts:post_edit' post.id %}">Редактировать</a><br>
     {% endif %}
-    {% if not post.group %}
-      <u>этот пост без группы</u>
-    {% else %}
+    {% if post.group %}
       <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы <strong>"{{ post.group }}"</strong></a>
     {% endif %}
     {% if not forloop.last %}<hr>{% endif %}

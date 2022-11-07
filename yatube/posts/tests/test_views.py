@@ -42,7 +42,7 @@ class PostPagesTests(TestCase):
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон в приложении posts."""
-        temlates_pages_name = {
+        templates_pages_name = {
             reverse('posts:index'): 'posts/index.html',
             reverse('posts:group_list', kwargs={'slug': self.group.slug}): (
                 'posts/group_list.html'
@@ -59,7 +59,7 @@ class PostPagesTests(TestCase):
                 'posts/post_create.html'
             ),
         }
-        for reverse_name, template in temlates_pages_name.items():
+        for reverse_name, template in templates_pages_name.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
@@ -67,7 +67,7 @@ class PostPagesTests(TestCase):
     def test_paginated_pages_show_correct_context(self):
         """
         Шаблоны index, group_list, profile
-        сформированы с правильным контекстом
+        сформированы с правильным контекстом.
         """
         addresses = {
             reverse('posts:index'): self.post,
@@ -166,24 +166,24 @@ class PaginatorViewsTest(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_first_index_page_contains_ten_records(self):
-        """Паджинатор 1-ой страницы index."""
+        """Пагинатор 1-ой страницы index."""
         response = self.client.get(reverse('posts:index'))
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_second_index_page_contains_ten_records(self):
-        """Паджинатор 2-ой страницы index."""
+        """Пагинатор 2-ой страницы index."""
         response = self.client.get(reverse('posts:index') + '?page=2')
         self.assertEqual(len(response.context['page_obj']), 3)
 
     def test_first_group_list_page_contains_ten_records(self):
-        """Паджинатор 1-ой страницы group_list."""
+        """Пагинатор 1-ой страницы group_list."""
         response = self.client.get(
             reverse('posts:group_list', kwargs={'slug': self.group.slug})
         )
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_second_group_list_page_contains_ten_records(self):
-        """Паджинатор 2-ой страницы group_list."""
+        """Пагинатор 2-ой страницы group_list."""
         response = self.client.get(
             reverse('posts:group_list', kwargs={
                 'slug': self.group.slug
@@ -192,14 +192,14 @@ class PaginatorViewsTest(TestCase):
         self.assertEqual(len(response.context['page_obj']), 3)
 
     def test_first_profile_page_contains_ten_records(self):
-        """Паджинатор 1-ой страницы profile."""
+        """Пагинатор 1-ой страницы profile."""
         response = self.client.get(
             reverse('posts:profile', kwargs={'username': self.user.username})
         )
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_second_profile_page_contains_ten_records(self):
-        """Паджинатор 2-ой страницы profile."""
+        """Пагинатор 2-ой страницы profile."""
         response = self.client.get(
             reverse('posts:profile', kwargs={
                 'username': self.user.username
@@ -310,7 +310,7 @@ class FollowTest(TestCase):
         self.authorized_client3.force_login(self.user3)
 
     def test_authorized_client_follow(self):
-        """authorized_client может подписаться на автора"""
+        """authorized_client может подписаться на автора."""
         self.authorized_client.post(
             reverse(
                 'posts:profile_follow',
@@ -323,7 +323,7 @@ class FollowTest(TestCase):
         ).exists())
 
     def test_authorized_client_unfollow(self):
-        """authorized_client может отписаться от автора"""
+        """authorized_client может отписаться от автора."""
         Follow.objects.create(
             user=self.user1,
             author=self.user2
@@ -342,7 +342,8 @@ class FollowTest(TestCase):
     def test_new_post_appears_subscribers_feed(self):
         """
         Новая запись появляется на странице подписчика
-        и не появляется на странице не подписанного пользователя"""
+        и не появляется на странице не подписанного пользователя.
+        """
         Follow.objects.create(
             user=self.user1,
             author=self.user2

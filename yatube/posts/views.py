@@ -1,17 +1,16 @@
-from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
 
 from .models import Group, Post, User, Follow
 from .forms import PostForm, CommentForm
+from .pagination import pagination
 
 
 def index(request):
+    """Отображение главной страницы."""
     posts = Post.objects.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = pagination(posts, request)
     context = {
         'page_obj': page_obj,
     }
@@ -19,11 +18,10 @@ def index(request):
 
 
 def group_posts(request, slug):
+    """Отображение страницы сообщества."""
     group = get_object_or_404(Group, slug=slug)
     posts = group.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = pagination(posts, request)
     context = {
         'group': group,
         'page_obj': page_obj,
@@ -32,11 +30,10 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Отображение страницы профиля автора."""
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = pagination(posts, request)
     context = {
         'author': author,
         'page_obj': page_obj,
@@ -49,19 +46,26 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    """Отображение страницы поста."""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
     comments = post.comments.all()
+    counter = post.author.posts.count()
     context = {
         'post': post,
         'form': form,
         'comments': comments,
+        'counter': counter
     }
     return render(request, 'posts/post_detail.html', context)
 
 
 @login_required
 def post_create(request):
+    """
+    Отображение страницы создания поста -
+    только для зарегистрированных пользователей.
+    """
     form = PostForm(
         request.POST or None,
         files=request.FILES or None
@@ -76,6 +80,10 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
+    """
+    Отображение страницы редактирования поста -
+    только для автора поста.
+    """
     post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return redirect('posts:post_detail', post_id)
@@ -96,6 +104,10 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
+    """
+    Добавление комментария к посту -
+    только для зарегистрированных пользователей.
+    """
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -108,10 +120,12 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    """
+    Отображение страницы с постами автора, на которого подписан пользователь -
+    только для зарегистрированных пользователей.
+    """
     posts = Post.objects.filter(author__following__user=request.user)
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = pagination(posts, request)
     context = {
         'page_obj': page_obj,
     }
@@ -120,6 +134,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Подписаться на автора."""
     following = get_object_or_404(User, username=username)
     if following != request.user:
         Follow.objects.get_or_create(
@@ -131,6 +146,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Отписаться от автора."""
     get_object_or_404(
         Follow, author__username=username, user=request.user
     ).delete()

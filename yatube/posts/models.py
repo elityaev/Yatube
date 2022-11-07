@@ -5,13 +5,16 @@ User = get_user_model()
 
 
 class Post(models.Model):
+    """Модель поста."""
     text = models.TextField(
         'Текст поста',
         help_text='Введите текст поста'
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
-        auto_now_add=True
+        auto_now_add=True,
+        db_index=True
+
     )
     author = models.ForeignKey(
         User,
@@ -44,6 +47,7 @@ class Post(models.Model):
 
 
 class Group(models.Model):
+    """Модель группы, в которую можно объединить посты."""
     title = models.CharField(max_length=200)
     slug = models.SlugField(
         max_length=50,
@@ -61,6 +65,7 @@ class Group(models.Model):
 
 
 class Comment(models.Model):
+    """Модель комментария, который можно оставлять к посту"""
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -86,9 +91,11 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ['-created']
 
 
 class Follow(models.Model):
+    """Модель подписки на автора поста."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

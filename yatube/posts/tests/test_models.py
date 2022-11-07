@@ -27,7 +27,7 @@ class PostModelTest(TestCase):
         self.assertEqual(post, 'Тестовый пост б')
 
     def test_group_models_have_correct_object_name(self):
-        """Проверка корректности названия группы для модели Group"""
+        """Проверка корректности названия группы для модели Group."""
         group = str(self.group)
         self.assertEqual(group, 'Тестова группа')
 

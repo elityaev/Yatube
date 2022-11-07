@@ -47,19 +47,19 @@ class PostURLTests(TestCase):
                 self.assertEqual(status_code, response)
 
     def test_pages_accessible_authorized_client(self):
-        """Проверка доступности страниц для authorized_client"""
+        """Проверка доступности страниц для authorized_client."""
         pages = {
             '/create/': HTTPStatus.OK,
             f'/posts/{self.post.pk}/edit/': HTTPStatus.OK,
         }
-        for adress, response in pages.items():
-            with self.subTest(adress=adress):
-                status_code = self.authorized_client.get(adress).status_code
+        for address, response in pages.items():
+            with self.subTest(adress=address):
+                status_code = self.authorized_client.get(address).status_code
                 self.assertEqual(status_code, response)
 
     def test_urls_uses_correct_template(self):
         """Проверка использования URL-адресами правильных HTML-шаблонов."""
-        urls_adress = {
+        urls_address = {
             '/': 'posts/index.html',
             f'/group/{self.group.slug}/': 'posts/group_list.html',
             f'/profile/{self.user.username}/': 'posts/profile.html',
@@ -67,29 +67,29 @@ class PostURLTests(TestCase):
             f'/posts/{self.post.pk}/edit/': 'posts/post_create.html',
             '/create/': 'posts/post_create.html',
         }
-        for adress, templates in urls_adress.items():
-            with self.subTest(adress=adress):
-                response = self.authorized_client.get(adress)
+        for address, templates in urls_address.items():
+            with self.subTest(adress=address):
+                response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, templates)
 
     def test_create_edit_pages_inaccessible_guest_client(self):
         """
         Проверка недоступности страниц create,
-        edit и add_comment для guest_client"""
+        edit и add_comment для guest_client."""
         pages = {
             '/create/': HTTPStatus.FOUND,
             f'/posts/{self.post.pk}/edit/': HTTPStatus.FOUND,
             f'/posts/{self.post.pk}/comment/': HTTPStatus.FOUND,
         }
-        for adress, response in pages.items():
-            with self.subTest(adress=adress):
-                status_code = self.guest_client.get(adress).status_code
+        for address, response in pages.items():
+            with self.subTest(adress=address):
+                status_code = self.guest_client.get(address).status_code
                 self.assertEqual(status_code, response)
 
     def test_edit_page_inaccessible_not_author_authorized_client(self):
         """
         Проверка недоступности страницы edit
-        для authorized_client не автора
+        для authorized_client не автора.
         """
         response = self.authorized_client1.get(
             f'/posts/{self.post.pk}/edit/'

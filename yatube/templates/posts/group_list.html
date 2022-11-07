@@ -4,7 +4,7 @@
   {{ group }}
 {% endblock %}
 {% block content %}
-   <h1>{{ group }}</h1>
+   <h1>Сообщество "{{ group }}"</h1>
   <p>{{ group.description }}</p>
   {% for post in page_obj %}
     <ul>
@@ -19,7 +19,7 @@
         <img class="card-img my-2" src="{{ im.url }}">
     {% endthumbnail %}
     <p>{{ post.text|linebreaksbr }}</p><br>
-    <a href="{% url 'posts:post_detail' post.id %}">подробнее...</a>
+    <a href="{% url 'posts:post_detail' post.id %}">Подробнее...</a>
     {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
   {% include 'posts/includes/paginator.html' %}
