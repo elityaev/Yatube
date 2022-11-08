@@ -1,11 +1,8 @@
 [![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
-<h2 align="center">Yatube</h2>
-
----
+<h1 align="center">Yatube</h1>
 
 ## Описание
 
----
 **Yatube** - это социальная сеть для публикации личных дневников, где 
 можно создавать свою страницу, на которой можно посмотреть все записи 
 автора. Пользователи могу заходить на чужие страницы, подписываться на 
@@ -13,15 +10,14 @@
 сообщества, на странице которого размещены записи разных авторов. 
 
 ### Основные технологии и библиотеки
-___
+
 * [Python](https://www.python.org/)
 * [Django](https://docs.djangoproject.com/en/4.1/)
 * [Unitest](https://docs.python.org/3/library/unittest.html)
 * [Pytest](https://docs.pytest.org/en/7.1.x/contents.html)
 
-### Реализованные в проекте функциональность
+### Реализованная функциональность
 
----
 * с помощью Django ORM реализованы основные CRUD-операции, 
 фильтрация объектов, агрегирующие функции;  
 * аутентификация пользователей, изменение пароля, 
@@ -35,6 +31,7 @@ ___
 * реализована пагинация постов
 
 ## Запуска проекта
+
 - Создать виртуальное окружение и подключить его.
 ```
 python -m venv venv
