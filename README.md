@@ -64,7 +64,7 @@ python manage.py runserver
 
 Запуск тестов
 ```
-python manage.py runserver
+python manage.py test
 ```
 
 
