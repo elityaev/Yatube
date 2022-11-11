@@ -29,11 +29,11 @@ class AboutViewsTests(TestCase):
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон в приложении about."""
-        temlates_pages_name = {
+        templates_pages_name = {
             'about/author.html': reverse('about:author'),
             'about/tech.html': reverse('about:tech'),
         }
-        for temlate, reverse_name in temlates_pages_name.items():
+        for template, reverse_name in templates_pages_name.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.guest_client.get(reverse_name)
-                self.assertTemplateUsed(response, temlate)
+                self.assertTemplateUsed(response, template)
