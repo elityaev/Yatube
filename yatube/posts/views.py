@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-
+from django.views.decorators.cache import cache_page
 
 from .models import Group, Post, User, Follow
 from .forms import PostForm, CommentForm
 from .pagination import pagination
 
 
+@cache_page(60)
 def index(request):
     """Отображение главной страницы."""
     posts = Post.objects.all()
