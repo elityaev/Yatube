@@ -16,6 +16,7 @@ urlpatterns = [
         views.add_comment,
         name='add_comment'
     ),
+    path('posts/<int:post_id>/share/', views.post_share, name='post_share'),
     path('follow/', views.follow_index, name='follow_index'),
     path(
         'profile/<str:username>/follow/',

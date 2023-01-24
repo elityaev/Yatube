@@ -1,9 +1,10 @@
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
 
 from .models import Group, Post, User, Follow
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, EmailPostForm
 from .pagination import pagination
 
 
@@ -152,3 +153,22 @@ def profile_unfollow(request, username):
         Follow, author__username=username, user=request.user
     ).delete()
     return redirect('posts:profile', request.user)
+
+
+def post_share(request, post_id):
+    """Отправка поста на почту."""
+    post = get_object_or_404(Post, id=post_id)
+    sent=False
+    if request.method == 'POST':
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            post_url = request.build_absolute_uri(post.get_absolut_url())
+            subject = f"{cd['name']} ({cd['email']}) рекомендует Вам прочесть {post}"
+            message = f"Прочитайте \"{post}\" по ссылке {post_url}\n\n{cd['comments']}"
+            send_mail(subject, message, cd['email'], [cd['to']])
+            sent = True
+    else:
+        form = EmailPostForm()
+    context = {'post': post, 'form': form, 'sent': sent}
+    return render(request, 'posts/share.html', context)

@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import Textarea
 
 from .models import Post, Comment
 
@@ -29,3 +30,11 @@ class CommentForm(forms.ModelForm):
         help_texts = {
             'text': 'Текст комментария'
         }
+
+
+class EmailPostForm(forms.Form):
+    """Форма для отправки поста на почту."""
+    name = forms.CharField(max_length=25)
+    email = forms.EmailField()
+    to = forms.EmailField()
+    comments = forms.CharField(required=False, widget=Textarea)

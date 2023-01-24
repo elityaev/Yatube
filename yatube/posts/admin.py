@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from .models import Group, Post, Comment, Follow
 
-
 class PostAdmin(admin.ModelAdmin):
     """Кастомная админка для модели Post."""
     list_display = ('pk', 'text', 'pub_date', 'author', 'group', 'image')
@@ -10,6 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('text',)
     list_filter = ('pub_date',)
     empty_value_display = '-пусто-'
+    raw_id_fields = ('author',)
 
 
 class GroupAdmin(admin.ModelAdmin):
