@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 User = get_user_model()
 
@@ -37,6 +38,7 @@ class Post(models.Model):
         upload_to='posts/',
         blank=True
     )
+    tags = TaggableManager()
 
     class Meta:
         ordering = ['-pub_date']

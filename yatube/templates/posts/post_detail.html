@@ -37,6 +37,14 @@
         <li class="list-group-item">
           <a href="{% url 'posts:post_share' post.id %}">поделиться этим постом</a>
         </li>
+        <li class="list-group-item">
+          Похожие посты:<br>
+          {% for post in similar_posts %}
+            <a href="{% url "posts:post_detail" post.id %}">
+              {{ post }}<br>
+            </a>
+          {% endfor %}
+        </li>
       </ul>
     </aside>
     <article class="col-12 col-md-9">

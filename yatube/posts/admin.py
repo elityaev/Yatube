@@ -4,8 +4,8 @@ from .models import Group, Post, Comment, Follow
 
 class PostAdmin(admin.ModelAdmin):
     """Кастомная админка для модели Post."""
-    list_display = ('pk', 'text', 'pub_date', 'author', 'group', 'image')
-    list_editable = ('group', 'image')
+    list_display = ('pk', 'text', 'pub_date', 'author', 'group', 'image', 'tags')
+    list_editable = ('group', 'image', 'tags')
     search_fields = ('text',)
     list_filter = ('pub_date',)
     empty_value_display = '-пусто-'

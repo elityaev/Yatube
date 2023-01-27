@@ -1,7 +1,9 @@
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_page
+from taggit.models import Tag
 
 from .models import Group, Post, User, Follow
 from .forms import PostForm, CommentForm, EmailPostForm
@@ -9,12 +11,18 @@ from .pagination import pagination
 
 
 @cache_page(60)
-def index(request):
-    """Отображение главной страницы."""
+def index(request, tag_slug=None):
+    """Отображение главной страницы, если передан tag_slug,
+    отображается список постов с этим тегом."""
     posts = Post.objects.all()
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags__in=[tag])
     page_obj = pagination(posts, request)
     context = {
         'page_obj': page_obj,
+        'tag': tag
     }
     return render(request, 'posts/index.html', context)
 
@@ -48,16 +56,25 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    """Отображение страницы поста."""
+    """Отображение страницы поста, списка похожих
+    статей (по тегам), добавление комментария."""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
     comments = post.comments.all()
     counter = post.author.posts.count()
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.objects.filter(
+        tags__in=post_tags_ids
+    ).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(
+        same_tags=Count('tags')
+    ).order_by('-same_tags', '-pub_date')[:3]
     context = {
         'post': post,
         'form': form,
         'comments': comments,
-        'counter': counter
+        'counter': counter,
+        'similar_posts': similar_posts
     }
     return render(request, 'posts/post_detail.html', context)
 
